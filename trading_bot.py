@@ -22,8 +22,8 @@ class MyXchangeClient(XChangeClient):
         pass
 
     async def bot_handle_order_fill(self, order_id: str, qty: int, price: int):
-        print("Order fill:", self.positions)
-
+        pass
+    
     async def bot_handle_order_rejected(self, order_id: str, reason: str) -> None:
         pass
 
