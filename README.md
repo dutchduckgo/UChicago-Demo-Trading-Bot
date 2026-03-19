@@ -1,1 +1,3 @@
-I think I've found the stub code for case 1. This code is from the 2025 competition.
+- I think I've found the stub code for case 1. 
+- This code is from the 2025 competition. 
+- The team I found this code off of did really bad and barely contributed anything to the stub code. That's why I had an easy time making it clean.

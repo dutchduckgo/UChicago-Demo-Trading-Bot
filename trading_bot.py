@@ -14,18 +14,21 @@ _LOGGER.setLevel(logging.INFO)
 
 
 class MyXchangeClient(XChangeClient):
+    '''A shell client with the methods that can be implemented to interact with the xchange.'''
 
     def __init__(self, host: str, username: str, password: str):
         super().__init__(host, username, password)
 
     async def bot_handle_cancel_response(self, order_id: str, success: bool, error: Optional[str]) -> None:
-        pass
+        order = self.open_orders[order_id]
+        print(f"{'Market' if order[2] else 'Limit'} Order ID {order_id} cancelled, {order[1]} unfilled")
 
     async def bot_handle_order_fill(self, order_id: str, qty: int, price: int):
-        pass
-    
+        print("Order fill:", self.positions)
+
     async def bot_handle_order_rejected(self, order_id: str, reason: str) -> None:
-        pass
+        print("Order rejected because of", reason)
+
 
     async def bot_handle_trade_msg(self, symbol: str, price: int, qty: int):
         pass
@@ -40,13 +43,27 @@ class MyXchangeClient(XChangeClient):
         pass
 
     async def trade(self):
+        """This is a task that is started right before the bot connects and runs in the background."""
         pass
-
+    
+    async def view_books(self):
+        """Prints the books every 3 seconds."""
+        while True:
+            await asyncio.sleep(3)
+            for security, book in self.order_books.items():
+                sorted_bids = sorted(((k,v) for k,v in book.bids.items() if v != 0), reverse=True) # Sort bids in descending order
+                sorted_asks = sorted((k,v) for k,v in book.asks.items() if v != 0)
+                print(f"Bids for {security}:\n{sorted_bids}")
+                print(f"Asks for {security}:\n{sorted_asks}")
+    
     async def start(self, user_interface):
+        """
+        Creates tasks that can be run in the background. Then connects to the exchange
+        and listens for messages.
+        """
+
         asyncio.create_task(self.trade())
-        if user_interface:
-            self.launch_user_interface()
-            asyncio.create_task(self.handle_queued_messages())
+        asyncio.create_task(self.view_books())
         await self.connect()
 
 
