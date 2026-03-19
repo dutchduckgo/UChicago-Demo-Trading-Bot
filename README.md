@@ -1,0 +1,1 @@
+I think I've found the stub code for case 1. This code is from the 2025 competition.
